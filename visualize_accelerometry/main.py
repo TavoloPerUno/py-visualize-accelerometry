@@ -218,6 +218,8 @@ def update_selection(attr, old, new):
                                      })
     new_selected = bp.ColumnDataSource(df_selected_data)
     selected_data.data.update(new_selected.data)
+    selected_data.change.emit()
+    table.change.emit()
 
 
 def clear_selection():
