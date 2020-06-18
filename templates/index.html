@@ -1,0 +1,21 @@
+{% extends base %}
+
+{% block title %}Visualize Accelerometry signals{% endblock %}
+
+{% block preamble %}
+<link rel="icon" type="image/x-icon" href="py_visualize_accelerometry/static/favicon.ico">
+<style>
+  @import url(https://fonts.googleapis.com/css?family=Noto+Sans);
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    color: #000000;
+    background: none;
+  }
+</style>
+{% endblock %}
+<body>
+{{ plot_div }}
+{{ plot_script }}
+</body>
