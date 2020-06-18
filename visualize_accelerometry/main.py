@@ -200,7 +200,7 @@ def mark_chairstand():
     if not btn_chairstand.label.endswith('(done)'):
         btn_chairstand.label = btn_chairstand.label + ' (done)'
 
-def update_selection():
+def update_selection(attr, old, new):
     selected_indices = colsource.selected.indices
     min_index = min(selected_indices)
     max_index = max(selected_indices)
