@@ -251,7 +251,7 @@ btn_export.js_on_click(CustomJS(args=dict(source=annotations),
                             code=open(os.path.join(os.path.dirname(__file__), 'js', "download.js")).read()))
 file_picker.on_change('value', update_plot)
 
-colsource.selected.on_change(update_selection)
+colsource.on_change("selected", update_selection)
 
 
 # colsource.selected.js_on_change(
