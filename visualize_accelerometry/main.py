@@ -67,7 +67,7 @@ def make_plot(srs, colsource, title):
 
     for (colr, leg) in zip(lst_colors, lst_col):
         p.line('timestamp', leg, color=colr, legend_label=leg, source=colsource, name='wave')
-        p.scatter('timestamp', leg, color=None, legend_label=leg, source=colsource, name='wave')
+        p.scatter('timestamp', leg, color=None, legend_label=leg, source=colsource, name='wave', visible=False)
 
     p.xaxis.formatter = DatetimeTickFormatter(days=["%m/%d %H:%M"],
                                               months=["%m/%d %H:%M"],
@@ -188,11 +188,13 @@ def mark_chairstand():
     pdf_results = pdf_results.loc[~((pdf_results['fname'] == file_picker.value) &
                                     (pdf_results['artifact'] == 'chair_stand'))]
     pdf_results = pdf_results.append(pd.DataFrame({'fname': file_picker.value,
-                                                   'artifact': 'chair_stand',
-                                                   'start_time': colsource.data['timestamp'][selected_indices[0]],
-                                                   'end_time': colsource.data['timestamp'][selected_indices[-1]],
-                                                   'start_time_str': colsource.data['timestamp_str'][selected_indices[0]],
-                                                   'end_time_str': colsource.data['timestamp_str'][selected_indices[-1]],
+                                                   'artifact': '3m_walk',
+                                                   'start_time': colsource.data['timestamp'][min(selected_indices)],
+                                                   'end_time': colsource.data['timestamp'][max(selected_indices)],
+                                                   'start_time_str': colsource.data['timestamp_str'][
+                                                       min(selected_indices)],
+                                                   'end_time_str': colsource.data['timestamp_str'][
+                                                       max(selected_indices)],
                                                    }, index=[0]))
     annotations.data.update(bp.ColumnDataSource(pdf_results).data)
     if not btn_chairstand.label.endswith('(done)'):
@@ -208,12 +210,12 @@ def mark_3m_walk():
                                     (pdf_results['artifact'] == '3m_walk'))]
     pdf_results = pdf_results.append(pd.DataFrame({'fname': file_picker.value,
                                                    'artifact': '3m_walk',
-                                                   'start_time': colsource.data['timestamp'][selected_indices[0]],
-                                                   'end_time': colsource.data['timestamp'][selected_indices[-1]],
+                                                   'start_time': colsource.data['timestamp'][min(selected_indices)],
+                                                   'end_time': colsource.data['timestamp'][max(selected_indices)],
                                                    'start_time_str': colsource.data['timestamp_str'][
-                                                       selected_indices[0]],
+                                                       min(selected_indices)],
                                                    'end_time_str': colsource.data['timestamp_str'][
-                                                       selected_indices[-1]],
+                                                       max(selected_indices)],
                                                    }, index=[0]))
     annotations.data.update(bp.ColumnDataSource(pdf_results).data)
     if not btn_3m_walk.label.endswith('(done)'):
@@ -240,17 +242,19 @@ colsource.selected.js_on_change(
         d2['x'] = []
         d2['y'] = []
         d2['z'] = []
+        min_index = Math.min.apply(Math, inds)
+        max_index = Math.max.apply(Math, inds)
         d2['timestamp_str'] = []
-        d2['timestamp'].push(d1['timestamp'][inds[0]])
-        d2['timestamp_str'].push(d1['timestamp_str'][inds[0]])
-        d2['x'].push(d1['x'][inds[0]])
-        d2['y'].push(d1['y'][inds[0]])
-        d2['z'].push(d1['z'][inds[0]])
-        d2['timestamp'].push(d1['timestamp'][inds[inds.length-1]])
-        d2['x'].push(d1['x'][inds[inds.length-1]])
-        d2['y'].push(d1['y'][inds[inds.length-1]])
-        d2['z'].push(d1['z'][inds[inds.length-1]])
-        d2['timestamp_str'].push(d1['timestamp_str'][inds[inds.length-1]])
+        d2['timestamp'].push(d1['timestamp'][min_index])
+        d2['timestamp_str'].push(d1['timestamp_str'][min_index])
+        d2['x'].push(d1['x'][min_index])
+        d2['y'].push(d1['y'][min_index])
+        d2['z'].push(d1['z'][min_index])
+        d2['timestamp'].push(d1['timestamp'][max_index])
+        d2['x'].push(d1['x'][max_index])
+        d2['y'].push(d1['y'][max_index])
+        d2['z'].push(d1['z'][max_index])
+        d2['timestamp_str'].push(d1['timestamp_str'][max_index])
         s2.change.emit();
         table.change.emit();
 
