@@ -67,7 +67,7 @@ def make_plot(srs, colsource, title):
 
     for (colr, leg) in zip(lst_colors, lst_col):
         p.line('timestamp', leg, color=colr, legend_label=leg, source=colsource, name='wave')
-        p.scatter('timestamp', leg, color=None, legend_label=leg, source=colsource, name='wave', visible=False)
+        p.scatter('timestamp', leg, color=colr, legend_label=leg, source=colsource, name='wave', visible=False)
 
     p.xaxis.formatter = DatetimeTickFormatter(days=["%m/%d %H:%M"],
                                               months=["%m/%d %H:%M"],
