@@ -12,8 +12,6 @@ idna==2.9
 Jinja2==2.11.2
 locket==0.2.0
 MarkupSafe==1.1.1
-mkl-fft==1.0.15
-mkl-service==2.3.0
 msgpack==1.0.0
 numpy==1.18.1
 olefile==0.46
