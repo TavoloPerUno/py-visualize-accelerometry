@@ -67,7 +67,7 @@ def make_plot(srs, colsource, title):
 
     for (colr, leg) in zip(lst_colors, lst_col):
         p.line('timestamp', leg, color=colr, legend_label=leg, source=colsource, name='wave')
-        p.scatter('timestamp', leg, color=colr, legend_label=leg, source=colsource, name='wave', visible=False)
+        p.scatter('timestamp', leg, color=None, legend_label=leg, source=colsource, name='wave', visible=False)
 
     p.xaxis.formatter = DatetimeTickFormatter(days=["%m/%d %H:%M"],
                                               months=["%m/%d %H:%M"],
@@ -236,6 +236,7 @@ colsource.selected.js_on_change(
         args=dict(s1=colsource, s2=selected_data, table=table),
         code="""
         var inds = cb_obj.indices;
+        console.log(inds)
         var d1 = s1.data;
         var d2 = s2.data;
         d2['timestamp'] = []
