@@ -1,1 +1,1 @@
-web gunicorn py_visualize_accelerometry:main
+web gunicorn main:main
