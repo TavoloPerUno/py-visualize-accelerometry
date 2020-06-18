@@ -202,6 +202,8 @@ def mark_chairstand():
 
 def update_selection(attr, old, new):
     selected_indices = colsource.selected.indices
+    print("Selected indices are")
+    print(selected_indices)
     min_index = min(selected_indices)
     max_index = max(selected_indices)
 
