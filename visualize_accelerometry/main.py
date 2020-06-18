@@ -114,8 +114,8 @@ selected_date_title = Div(text="<b>Selected segment bounds</b>")
 
 
 columns = [
-         TableColumn(field="timestamp", title="Timestamp"),
-        TableColumn(field="timestamp_str", title="Timestamp (pretty)"),
+         TableColumn(field="timestamp", title="Epoch"),
+        TableColumn(field="timestamp_str", title="Timestamp"),
          TableColumn(field="x", title="X"),
          TableColumn(field="y", title="Y"),
          TableColumn(field="z", title="Z"),]
@@ -200,6 +200,26 @@ def mark_chairstand():
     if not btn_chairstand.label.endswith('(done)'):
         btn_chairstand.label = btn_chairstand.label + ' (done)'
 
+def update_selection():
+    selected_indices = colsource.selected.indices
+    min_index = min(selected_indices)
+    max_index = max(selected_indices)
+
+    df_selected_data = pd.DataFrame({'timestamp': [colsource.data['timestamp'][min_index],
+                                                   colsource.data['timestamp'][max_index]],
+                                     'timestamp_str': [colsource.data['timestamp_str'][min_index],
+                                                   colsource.data['timestamp_str'][max_index]],
+                                     'X': [colsource.data['x'][min_index],
+                                                       colsource.data['x'][max_index]],
+                                     'Y': [colsource.data['y'][min_index],
+                                                       colsource.data['y'][max_index]],
+                                     'Z': [colsource.data['z'][min_index],
+                                                       colsource.data['z'][max_index]]
+                                     })
+    new_selected = bp.ColumnDataSource(df_selected_data)
+    selected_data.data.update(new_selected.data)
+
+
 def clear_selection():
     colsource.selected.indices = []
 
@@ -230,38 +250,42 @@ btn_clear_selection.on_click(clear_selection)
 btn_export.js_on_click(CustomJS(args=dict(source=annotations),
                             code=open(os.path.join(os.path.dirname(__file__), 'js', "download.js")).read()))
 file_picker.on_change('value', update_plot)
-colsource.selected.js_on_change(
-    "indices",
-    CustomJS(
-        args=dict(s1=colsource, s2=selected_data, table=table),
-        code="""
-        var inds = cb_obj.indices;
-        console.log(inds)
-        var d1 = s1.data;
-        var d2 = s2.data;
-        d2['timestamp'] = []
-        d2['x'] = []
-        d2['y'] = []
-        d2['z'] = []
-        min_index = Math.min.apply(Math, inds)
-        max_index = Math.max.apply(Math, inds)
-        d2['timestamp_str'] = []
-        d2['timestamp'].push(d1['timestamp'][min_index])
-        d2['timestamp_str'].push(d1['timestamp_str'][min_index])
-        d2['x'].push(d1['x'][min_index])
-        d2['y'].push(d1['y'][min_index])
-        d2['z'].push(d1['z'][min_index])
-        d2['timestamp'].push(d1['timestamp'][max_index])
-        d2['x'].push(d1['x'][max_index])
-        d2['y'].push(d1['y'][max_index])
-        d2['z'].push(d1['z'][max_index])
-        d2['timestamp_str'].push(d1['timestamp_str'][max_index])
-        s2.change.emit();
-        table.change.emit();
 
-    """,
-    ),
-)
+colsource.selected.on_change(update_selection)
+
+
+# colsource.selected.js_on_change(
+#     "indices",
+#     CustomJS(
+#         args=dict(s1=colsource, s2=selected_data, table=table),
+#         code="""
+#         var inds = cb_obj.indices;
+#         console.log(inds)
+#         var d1 = s1.data;
+#         var d2 = s2.data;
+#         d2['timestamp'] = []
+#         d2['x'] = []
+#         d2['y'] = []
+#         d2['z'] = []
+#         min_index = Math.min.apply(Math, inds)
+#         max_index = Math.max.apply(Math, inds)
+#         d2['timestamp_str'] = []
+#         d2['timestamp'].push(d1['timestamp'][min_index])
+#         d2['timestamp_str'].push(d1['timestamp_str'][min_index])
+#         d2['x'].push(d1['x'][min_index])
+#         d2['y'].push(d1['y'][min_index])
+#         d2['z'].push(d1['z'][min_index])
+#         d2['timestamp'].push(d1['timestamp'][max_index])
+#         d2['x'].push(d1['x'][max_index])
+#         d2['y'].push(d1['y'][max_index])
+#         d2['z'].push(d1['z'][max_index])
+#         d2['timestamp_str'].push(d1['timestamp_str'][max_index])
+#         s2.change.emit();
+#         table.change.emit();
+#
+#     """,
+#     ),
+# )
 
 ### Layout
 
